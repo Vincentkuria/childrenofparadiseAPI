@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import jakarta.validation.constraints.NotBlank
 import java.sql.Timestamp
 
 @Entity
@@ -13,9 +14,14 @@ import java.sql.Timestamp
 data class Gallery(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
+    val id: Long?=null,
+
+    @field:NotBlank
     var image: String,
-    var title: String?,
+
+    @field:NotBlank
+    var title: String,
+
     @Column(insertable = false, updatable = false)
-    var createdAt: Timestamp?
+    var createdAt: Timestamp?=null
 )

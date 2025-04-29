@@ -2,6 +2,7 @@ package com.childrenofparadiseorphanage.api.service
 
 import com.childrenofparadiseorphanage.api.controller.PaystackBody
 import com.childrenofparadiseorphanage.api.model.Donation
+import com.childrenofparadiseorphanage.api.model.Status
 import com.childrenofparadiseorphanage.api.repository.DonationRepository
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import org.springframework.core.env.Environment
@@ -45,5 +46,17 @@ class DonationService(private val env: Environment,private val db: DonationRepos
         val responseBody = response.body ?: throw IllegalStateException("No response body")
         val paystackResponse = jacksonObjectMapper().readValue(responseBody, PaystackResponse::class.java)
         return paystackResponse
+    }
+
+    fun getStatus(id: Long): Donation =db.findById(id).orElse(null)
+
+    fun updatesFromHook(reference: String,status: Status,amount: Long): Boolean{
+        val donation: Donation?=db.findByReference(reference)
+        donation?.let {
+            donation.status=status
+            donation.amount=amount
+            db.save(donation)
+        }?:return false
+        return true
     }
 }

@@ -2,12 +2,23 @@ package com.childrenofparadiseorphanage.api.service
 
 import com.childrenofparadiseorphanage.api.model.Message
 import com.childrenofparadiseorphanage.api.repository.MessageRepository
+import jakarta.persistence.EntityManager
+import jakarta.transaction.Transactional
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
+import java.util.Optional
 
 @Service
-class MessageService(private val db: MessageRepository) {
+class MessageService(private val db: MessageRepository, private val entityManager: EntityManager) {
 
-    fun saveMessage(message: Message): Message = db.save(message)
+    @Transactional
+    fun saveMessage(message: Message): Message {
+        val thisMessage=db.save(message)
+        entityManager.refresh(thisMessage)
+        return thisMessage
+    }
 
     fun getAllMessages()= db.findAll().toList()
 
@@ -15,10 +26,12 @@ class MessageService(private val db: MessageRepository) {
 
     fun getReadMessages(): List<Message> = db.findByMarkReadTrue()
 
-    fun updateMarkRead(id: Long, isRead: Boolean) {
-        var updatable= db.findById(id).orElseThrow()
+    fun updateMarkRead(id: Long, isRead: Boolean): Any {
+        val updatable = db.findById(id).orElseThrow {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST,"Message with provided id not found")
+        }
         updatable.markRead=isRead
-        db.save(updatable)
+        return db.save(updatable)
     }
 
     fun deleteMessage(id: Long)=db.deleteById(id)
