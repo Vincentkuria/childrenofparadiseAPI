@@ -34,7 +34,7 @@ class WebhookController(private var verifyPaystackWebhook: VerifyPaystackWebhook
         if (!isValid){
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
         }
-        print("---------------------------------------------------------------------------------------")
+        print("---------------------------------------------------------------------------------------hook received")
         print(body)
         val reqBody= jacksonObjectMapper().readValue(body, PaystackHookRequest::class.java)
 
@@ -44,7 +44,8 @@ class WebhookController(private var verifyPaystackWebhook: VerifyPaystackWebhook
     }
 
     @GetMapping("/paystack/{id}")
-    fun pollingForStatus(@PathVariable id: Long): Status? {
-        return service.getStatus(id).status
+    fun pollingForStatus(@PathVariable id: Long): ResponseEntity<Map<String, Status?>?> {
+        print(service.getStatus(id).status)
+        return ResponseEntity.ok().body(mapOf("status" to service.getStatus(id).status))
     }
 }
