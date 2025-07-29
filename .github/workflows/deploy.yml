@@ -51,5 +51,5 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             cd ${{ secrets.VPS_TARGET_DIR }}
-            docker-compose down
-            docker-compose up -d --build
+            docker compose down
+            docker compose up -d --build
