@@ -19,6 +19,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Fix gradlew permissions
+        run: chmod +x gradlew
+
       - name: Build jar
         run: ./gradlew clean build -x test
 
