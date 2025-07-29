@@ -31,6 +31,9 @@ jobs:
           echo "Found JAR: $JAR_FILE"
           cp "$JAR_FILE" mamaclare.jar
 
+      - name: Debug - list files to upload
+        run: ls -lh mamaclare.jar Dockerfile docker-compose.yml
+
       - name: Upload files to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
