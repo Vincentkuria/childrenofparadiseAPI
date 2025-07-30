@@ -28,6 +28,7 @@ services:
     environment:
       - PMA_HOST=mysql
       - PMA_PORT=3306
+      - PMA_ABSOLUTE_URI=https://mamaclare.org/phpmyadmin/
     ports:
       - "8081:80"
     depends_on:
