@@ -28,13 +28,18 @@ class AuthController(
     }
 
     @PostMapping("/login")
-    fun login(@RequestParam email: String, @RequestParam password:String): ResponseEntity<out Map<String, String?>?> {
-        userService.getUserByEmail(email)?.let {
-            if (passwordEncoder.matches(password,it.password)){
-                return ResponseEntity.ok(mapOf("token" to jwtUtil.generateToken(email) ))
+    fun login(@RequestBody loginCredentials: LoginCredentials): ResponseEntity<out Map<String, String?>?> {
+        userService.getUserByEmail(loginCredentials.email)?.let {
+            if (passwordEncoder.matches(loginCredentials.password,it.password)){
+                return ResponseEntity.ok(mapOf("token" to jwtUtil.generateToken(loginCredentials.email) ))
             }
         }
         return ResponseEntity.badRequest().body(mapOf("message" to "wrong email or password"))
     }
 
 }
+
+data class LoginCredentials(
+    val email: String,
+    val password: String
+)
