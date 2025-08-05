@@ -37,7 +37,8 @@ class SecurityConfig{
                     .requestMatchers(HttpMethod.GET, "/gallery").permitAll()
                     .requestMatchers(HttpMethod.POST,"/donate").permitAll()
                     .requestMatchers(HttpMethod.POST,"/messages").permitAll()
-                    .requestMatchers("/webhook/paystack/**")
+                    .requestMatchers(HttpMethod.GET,"/webhook/paystack/**").permitAll()
+                    .requestMatchers(HttpMethod.POST,"/webhook/paystack/**")
                     .access(WebExpressionAuthorizationManager(paystackIPsExpression))
                     .anyRequest().authenticated()
             }
@@ -66,7 +67,7 @@ class SecurityConfig{
 
         val source= UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**",frontendConfig)
-        source.registerCorsConfiguration("/webhook/paystack/**",webhookConfig)
+        source.registerCorsConfiguration("/webhook/paystack/hook",webhookConfig)
 
         return source
     }
