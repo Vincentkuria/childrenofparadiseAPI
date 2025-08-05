@@ -30,7 +30,6 @@ data class Donation(
     @field:Size(message = "valid phone number is required", min = 6,max=20)
     var phone: String,
 
-    @Column(updatable = false)
     var amount: Long,
 
     @Column(updatable = false)
@@ -38,7 +37,7 @@ data class Donation(
 
     var status: Status?= Status.PENDING,
 
-    @Column(updatable = false)
+    @Column(updatable = false, insertable = false)
     var createdAt: Timestamp?=null,
     var updatedAt: Timestamp = Timestamp.from(Instant.now())
 )
