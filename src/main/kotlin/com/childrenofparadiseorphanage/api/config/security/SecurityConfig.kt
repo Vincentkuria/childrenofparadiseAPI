@@ -33,7 +33,7 @@ class SecurityConfig{
         return http.cors {  }
             .csrf { it.disable() }
             .authorizeHttpRequests {
-                it.requestMatchers("/auth/*","/uploads/*").permitAll()
+                it.requestMatchers("/auth/**","/uploads/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/gallery").permitAll()
                     .requestMatchers(HttpMethod.POST,"/donate").permitAll()
                     .requestMatchers(HttpMethod.POST,"/messages").permitAll()
