@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
+import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
 
 @Component
@@ -15,14 +16,27 @@ class JwtAuthFilter(
     private val jwtUtil: JwtUtil,
     private val userService: UserService
 ): OncePerRequestFilter() {
+
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        val path=request.servletPath
+        val method=request.method
+        val pathMacher= AntPathMatcher()
+        return (
+                (pathMacher.match("/auth/**",path)) ||
+                        (pathMacher.match("/uploads/**",path)) ||
+                        (pathMacher.match("/webhook/paystack/**",path)) ||
+                        (path=="/gallery" && method=="GET") ||
+                        (path=="/donate" && method=="POST") ||
+                        (path=="/messages" && method=="POST")
+                )
+    }
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        print("Request URI: ${request.requestURI}")
         val authHeader: String?=request.getHeader("Authorization")
-        print(request.headerNames)
         if (authHeader==null || !authHeader.startsWith("Bearer ")){
             filterChain.doFilter(request,response)
             return
