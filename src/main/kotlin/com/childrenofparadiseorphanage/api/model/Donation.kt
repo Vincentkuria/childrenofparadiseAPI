@@ -2,6 +2,8 @@ package com.childrenofparadiseorphanage.api.model
 
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -35,6 +37,7 @@ data class Donation(
     @Column(updatable = false)
     var reference: String?=null,
 
+    @Enumerated(EnumType.STRING)
     var status: Status?= Status.PENDING,
 
     @Column(updatable = false, insertable = false)
