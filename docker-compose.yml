@@ -12,6 +12,8 @@ services:
       - DATASOURCE_PASSWORD=${DATASOURCE_PASSWORD}
       - PAYSTACK_SECRET_KEY=${PAYSTACK_SECRET_KEY}
       - JWT_SECRET=${JWT_SECRET}
+    volumes:
+      - ./uploads_data:/app/uploads
 
   mysql:
     image: mysql:8.0
@@ -20,8 +22,7 @@ services:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${MYSQL_DATABASE}
     volumes:
-      - mysql_data:/var/lib/mysql
-      - uploads_data:/app/uploads
+      - ./mysql_data:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin:latest
@@ -34,7 +35,3 @@ services:
       - "8081:80"
     depends_on:
       - mysql
-
-volumes:
-  mysql_data:
-  uploads_data:
