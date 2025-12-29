@@ -17,7 +17,6 @@ import java.time.Instant
 @Entity
 @Table(name = "donations")
 data class Donation(
-//    TODO validate
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long?=null,
