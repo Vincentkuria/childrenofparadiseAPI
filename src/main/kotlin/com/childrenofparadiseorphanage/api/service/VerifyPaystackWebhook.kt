@@ -11,12 +11,12 @@ class VerifyPaystackWebhook(private val env: Environment) {
 
     private val paystackSecretKey= env.getProperty("paystack.secret")?:throw IllegalStateException("paystack.secret property is required")
 
-    fun verify(payload: ByteArray, signature: String): Boolean{
+    fun verify(payload: String, signature: String): Boolean{
         //create a key (secretKeySpec) with paystackSecretKey's bytearray & HmacSHA512 algorithm
         val secretKeySpec= SecretKeySpec(paystackSecretKey.toByteArray(),"HmacSHA512")
         val mac= Mac.getInstance("HmacSHA512")
         mac.init(secretKeySpec)
-        val hash =mac.doFinal(payload)
+        val hash =mac.doFinal(payload.toByteArray())
         val generatedSignature= String(Hex.encode(hash))
         return generatedSignature.equals(signature,ignoreCase = true)
     }

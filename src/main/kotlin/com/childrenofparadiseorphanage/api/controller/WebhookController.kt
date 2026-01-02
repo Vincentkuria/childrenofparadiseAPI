@@ -3,6 +3,7 @@ package com.childrenofparadiseorphanage.api.controller
 import com.childrenofparadiseorphanage.api.model.Status
 import com.childrenofparadiseorphanage.api.service.DonationService
 import com.childrenofparadiseorphanage.api.service.VerifyPaystackWebhook
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.HttpStatus
@@ -15,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class PaystackHookRequest(var data: StatusAndAmount)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class StatusAndAmount(
     val status: String,
     val amount: Long,
@@ -27,10 +31,10 @@ data class StatusAndAmount(
 class WebhookController(private var verifyPaystackWebhook: VerifyPaystackWebhook, private var service: DonationService) {
 
     @PostMapping("/paystack/hook")
-    fun paystackWebhook(@RequestHeader("x-paystack-signature") signature: String,request: HttpServletRequest,@RequestBody body: String): ResponseEntity.BodyBuilder {
+    fun paystackWebhook(@RequestHeader("x-paystack-signature") signature: String,@RequestBody body: String): ResponseEntity.BodyBuilder {
 
-        var isValid=verifyPaystackWebhook.verify(request.inputStream.readBytes(),signature)
-
+        val isValid=verifyPaystackWebhook.verify(body,signature)
+        print("validddd----- $isValid")
         if (!isValid){
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
         }

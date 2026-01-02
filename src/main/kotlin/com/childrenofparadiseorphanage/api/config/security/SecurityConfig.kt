@@ -18,13 +18,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @Configuration
 class SecurityConfig{
 
-//    paystack whitelisted Ips to access /webhook/paystack**
-    private val paystackIPsExpression = listOf(
-        "52.31.139.75",
-        "52.49.173.169",
-        "52.214.14.220"
-    ).joinToString(" or "){"hasIpAddress('$it')"}
-
     @Bean
     fun filterChain(
         http: HttpSecurity,
@@ -37,9 +30,7 @@ class SecurityConfig{
                     .requestMatchers(HttpMethod.GET, "/gallery").permitAll()
                     .requestMatchers(HttpMethod.POST,"/donate").permitAll()
                     .requestMatchers(HttpMethod.POST,"/messages").permitAll()
-                    .requestMatchers(HttpMethod.GET,"/webhook/paystack/**").permitAll()
-                    .requestMatchers(HttpMethod.POST,"/webhook/paystack/**")
-                    .access(WebExpressionAuthorizationManager(paystackIPsExpression))
+                    .requestMatchers("/webhook/paystack/**").permitAll()
                     .anyRequest().authenticated()
             }
             .sessionManagement {
